@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exchange Currency</title>
+    <link rel="shortcut icon" href="assets/icon.svg" type="image/x -icon" />
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery3.6.0.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="scipt.js"  defer></script>
+</head>
+<body>
+    <div class="container">
+      <img src="assets/background.svg" alt="background" width="35%" class="background">
+
+      <!--! main screen -->
+        <div class="main_container" id="mainContainer">
+          <h1 class="header">Check Currency Exchange Rate in Real Time</h1>
+          <p class="info">Select Currency and Input Amount</p>
+          <div class="input_currency_container">
+            <div class="input_currency" id="inputCurrency">
+              <p id="countryCode" value="mmk">mmk</p>
+              <i class="fa-solid fa-angle-down"></i>
+            </div>
+            <input type="text" name="price" id="inputPrice" class="input_pirce" value="1">
+          </div>
+          <div class="exchange_rate_container">
+            <div class="exchange_rate_header">
+              <p>Exchange Rates</p>
+              <span id="addMore"><i class="fa-solid fa-plus"></i> <p>add more</p></span>
+            </div>
+            <div class="rates_container" id="ratesContainer"></div>
+          </div>
+        </div>
+
+      <!-- ! Converter Section -->
+        <div class="inner_container" id="innerContainer">
+            <h1>Convert</h1>
+            <input type="text" name="current_currency" id="currentCurrency" class="current_currency" value="1">
+            <div class="convertor_container">
+                <div class="convertor_first convertor_action" id="convertorFirst">
+                    <p id="firstCurrencyName" >usd</p>
+                    <img src="assets/dropdown.svg" alt="dropdown">
+                </div>
+                <img src="assets/convert-icon.svg" alt="convert" class="convertor_center_img" width="10%">
+                <div class="convertor_second convertor_action" id="convertorSecond">
+                    <p id="secondCurrencyName"></p>
+                    <img src="assets/dropdown.svg" alt="dropdown">
+                </div>
+            </div>
+            <h1 class="result_currency" id="resultCurrency">0</h1>
+            <div class="back_btn" id="backBtn">
+              <i class="fa-solid fa-chevron-left"></i>
+            </div>
+        </div>
+        
+        <!--! Country List Alert -->
+        <div class="alert_container" id="alertContainer">
+          <div class="alert_countries_container">
+           <div class="alert_header">
+            <p>change currency</p>
+            <img src="assets/close-icon.svg" alt="close-icon" width="10%" id="closeBtn">
+           </div>
+           <hr/>
+           <div class="countries_container" id="countriesContainer"></div>
+          </div>
+        </div>
+
+        <!--! rate option -->
+        <div class="rate_option_container" active="false" id="rateOptionContainer">
+          <div class="view_container" id="viewContainer">
+            <i class="fa-solid fa-eye"></i>
+            <p>view more currency</p>
+          </div>
+          <div class="delete_container" id="DeleteBtn">
+            <i class="fa-regular fa-trash-can"></i>
+            <p>delete currency</p>
+          </div>
+          <hr>
+          <p class="cancel" id="cancelBtn">cancel</p>
+        </div>
+
+      </div>
+</body>
+</html>
