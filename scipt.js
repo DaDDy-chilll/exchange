@@ -47,8 +47,18 @@ async function useFetchForFlag(code) {
 }
 
 async function main() {
-  const code = $("#countryCode").attr("value");
-  const amount = +$("#inputPrice").val();
+  const storeData = JSON.parse(localStorage.getItem('userClick'));
+  let code;
+  let amount;
+  if(storeData){
+    code = storeData.inputClickCode;
+    amount = storeData.inputAmount
+    $("#countryCode").text(code);
+    $("#inputPrice").val(amount);
+  }else{
+    code =  $("#countryCode").attr("value");
+    amount =  +$("#inputPrice").val();
+  }
   userClickInfo.inputAmount = amount;
   userClickInfo.inputClickCode = code;
   userClickInfo.inputClickCodeSymbol = countryInfo[`${code}symbol`];
@@ -58,7 +68,7 @@ async function main() {
     const rates = await useFetch(`latest/${code}`);
     const { conversion_rates } = rates;
     await fetchCountryInfo(conversion_rates);
-    showDisplayRate(rates);
+    showDisplayRate(rates,amount);
   } catch (error) {
     console.log(error);
   }
@@ -67,6 +77,7 @@ async function main() {
 $("#inputPrice").blur(() => {
   const amount = +$("#inputPrice").val();
   userClickInfo.inputAmount = amount;
+  localStorage.setItem("userClick", JSON.stringify(userClickInfo));
   showDisplayRate(currentCurrency, amount);
 });
 
@@ -212,12 +223,12 @@ async function countryClick(country) {
   const code = country.split("/")[0];
   currentCurrency.currentCurrencyCode = code;
   const response = await useFetch(`latest/${code}`);
+  localStorage.setItem('currencyRates',JSON.stringify(response))
   $("#countryCode").text(code);
   $("#alertContainer").fadeOut(100);
   const amount = +$("#inputPrice").val();
   showDisplayRate(response, amount);
   userClickInfo.inputClickCode = code;
-  console.log(countryInfo[`${code}symbol`]);
   userClickInfo.inputClickCodeSymbol = countryInfo[`${code}symbol`];
   localStorage.setItem("userClick", JSON.stringify(userClickInfo));
 }
@@ -232,6 +243,9 @@ async function addCountry(country) {
   localStorage.setItem("collections", JSON.stringify(uniqueData));
   $("#alertContainer").fadeOut(100);
   await main();
+  // const countryInfo = localStorage.getItem('currencyRates')
+
+  // showDisplayRate(countryInfo,userClickInfo.inputAmount)
 }
 
 $("#DeleteBtn").click(async () => {
