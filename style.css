@@ -278,6 +278,14 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1% 5%;
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+.alert_countries_container hr{
+    position: sticky;
+    top: 15%;
 }
 
 .alert_header p{
@@ -445,7 +453,12 @@ body {
     font-family: "K2D", sans-serif;
 }
 
-.inner_container .current_currency {
+.inner_container .input_container{
+    position: relative;
+    width: 100%;
+}
+
+.input_container .current_currency {
     font-size: 1.2rem;
     width: 50%;
     border: none;
@@ -457,6 +470,22 @@ body {
     margin-bottom: 3%;
     font-family: "Kumar One", serif;
 }
+
+.input_container .input_symbol{
+    margin: 0;
+    position: absolute;
+    top: -66%;
+    right: 0%;
+    font-size: 1.2rem;
+    font-family: "Kumar One", serif;
+    color: white;
+    background-color: var(--primary-color);
+    padding: 1.5% 2%;
+    border-radius: .5vmax;
+
+}
+
+
 
 .inner_container .convertor_container {
     display: flex;

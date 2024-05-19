@@ -51,6 +51,7 @@ async function main() {
   const amount = +$("#inputPrice").val();
   userClickInfo.inputAmount = amount;
   userClickInfo.inputClickCode = code;
+  userClickInfo.inputClickCodeSymbol = countryInfo[`${code}symbol`];
   localStorage.setItem("userClick", JSON.stringify(userClickInfo));
   currentCurrency.currentCurrencyCode = code;
   try {
@@ -79,13 +80,13 @@ function showDisplayRate(countryInfo, inputPrice = 1) {
     const { countryCode, name } = item;
     currentCurrency.rateCountryCode.push(countryCode);
     const response = await useFetchForFlag(countryCode);
-    const { flags } = response[0];
+    const { flags,currencies } = response[0];
 
     const element = `
         <div class="rate_card" onclick='rateClick("${countryCode}")'>
         <div class="flagPrice">
         <img src=${flags.png} alt="flag"  class="flag">
-          <p class="price">$ ${
+          <p class="price">${currencies[countryCode].symbol} ${
             parseInt(conversion_rates[countryCode] * inputPrice) > 0
               ? parseFloat(conversion_rates[countryCode] * inputPrice).toFixed(
                   2
@@ -107,6 +108,8 @@ function showDisplayRate(countryInfo, inputPrice = 1) {
 function rateClick(countryCode) {
   userClickCountryCode = countryCode;
   userClickInfo.userClickCountry = countryCode;
+  userClickInfo.userClickCountrySymbol = countryInfo[`${countryCode}symbol`];
+  userClickInfo.inputClickCodeSymbol = countryInfo[`${userClickInfo.inputClickCode.toUpperCase()}symbol`];
   localStorage.setItem("userClick", JSON.stringify(userClickInfo));
   $("#rateOptionContainer").attr("active", "true");
 }
@@ -117,6 +120,7 @@ async function alertCountriesList(change) {
   const { rateCountryCode, currentCurrencyCode } = currentCurrency;
   if (change === "input") {
     userClickInfo.inputClickCode = currentCurrencyCode;
+    userClickInfo.inputClickCodeSymbol = countryInfo[`${currentCurrencyCode}symbol`];
     localStorage.setItem("userClick", JSON.stringify(userClickInfo));
   }
   supported_codes.forEach(async (country) => {
@@ -213,6 +217,8 @@ async function countryClick(country) {
   const amount = +$("#inputPrice").val();
   showDisplayRate(response, amount);
   userClickInfo.inputClickCode = code;
+  console.log(countryInfo[`${code}symbol`]);
+  userClickInfo.inputClickCodeSymbol = countryInfo[`${code}symbol`];
   localStorage.setItem("userClick", JSON.stringify(userClickInfo));
 }
 
@@ -253,8 +259,9 @@ function fetchCountryInfo(conversion_rates) {
   Object.keys(conversion_rates).forEach(async (code) => {
     if (!["0", "1", "2", "HRK", "SLE", "XDR"].includes(code)) {
       const response = await useFetchForFlag(code);
-      const { flags } = response[0];
+      const { flags,currencies } = response[0];
       countryInfo[code] = flags.png;
+      countryInfo[`${code}symbol`] = currencies[code].symbol;
     }
   });
 }
@@ -278,15 +285,19 @@ $("#backBtn").click(() => {
 //! Converter Section
 
 async function startConvertor() {
-  const { inputAmount, inputClickCode, userClickCountry } = JSON.parse(
+  const { inputAmount, inputClickCode,inputClickCodeSymbol, userClickCountry,userClickCountrySymbol } = JSON.parse(
     localStorage.getItem("userClick")
   );
+
   const { conversion_rates } = await useFetch(`latest/${inputClickCode}`);
   currentCurrency.conversion_rates = conversion_rates;
   userClickInfo.inputAmount = inputAmount;
   userClickInfo.inputClickCode = inputClickCode;
+  userClickInfo.inputClickCodeSymbol = inputClickCodeSymbol;
   userClickInfo.userClickCountry = userClickCountry;
+  userClickInfo.userClickCountrySymbol = userClickCountrySymbol;
   $("#currentCurrency").val(inputAmount);
+  $('#inputSymbol').text(inputClickCodeSymbol)
   $("#firstCurrencyName").text(inputClickCode);
   $("#secondCurrencyName").text(userClickCountry);
   convertPrice(inputAmount);
@@ -302,7 +313,7 @@ function convertPrice(amount) {
   const resultPrice = parseFloat(
     amount * conversion_rates[userClickInfo.userClickCountry]
   ).toFixed(3);
-  $("#resultCurrency").text(`${resultPrice} ${userClickInfo.userClickCountry}`);
+  $("#resultCurrency").text(`${resultPrice} ${userClickInfo.userClickCountrySymbol}`);
 }
 
 $("#convertorFirst").click(() => {
@@ -320,9 +331,12 @@ async function convertCurrency(data) {
   if (type === "first") {
     $("#firstCurrencyName").text(code);
     userClickInfo.inputClickCode = code;
+    userClickInfo.inputClickCodeSymbol =  countryInfo[`${code}symbol`];
   } else {
     $("#secondCurrencyName").text(code);
     userClickInfo.userClickCountry = code;
+    userClickInfo.userClickCountrySymbol =  countryInfo[`${code}symbol`];
+
   }
   localStorage.setItem("userClick", JSON.stringify(userClickInfo));
   $("#alertContainer").fadeOut(100, () => startConvertor());
